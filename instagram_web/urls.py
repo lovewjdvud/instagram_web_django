@@ -18,9 +18,8 @@ from django.contrib import admin
 from django.urls import path
 from .views import Sub
 from content.views import Main,Upload
+from .settings import MEDIA_URL,MEDIA_ROOT
+from django.conf.urls.static import static
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("main",Main.as_view()),
-    path("content/upload", Upload.as_view())
-]
+    path("admin/", admin.site.u

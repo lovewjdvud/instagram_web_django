@@ -327,8 +327,8 @@
     });
 
     $("#feed_create_button").click(function () {
-        let file = files
-        let image = files[0].name ;
+        let file = files[0];
+        let image = files[0].name;
         let content = $("#input_feed_content").val();
 
 
@@ -337,12 +337,12 @@
 
         let fd = new FormData();
 
-        fd.append(file,file)
-        fd.append(image,image)
-        fd.append(content,content)
-        fd.append(user_id,user_id)
-        fd.append(profile_image,profile_image)
-         console.log("contentcontentcontent         " + fd[2]);
+        fd.append("file",file)
+        fd.append("image",image)
+        fd.append("content",content)
+        fd.append("user_id",user_id)
+        fd.append("profile_image",profile_image)
+         console.log("contentcontentcontent         " + content);
         $.ajax({
             url: "/content/upload",
             data: fd,
@@ -350,7 +350,7 @@
             processData: false,
             contentType:false,
             success: function (data) {
-                console.log("에러")
+                console.log("성공")
             },
             error: function (request, status, error) {
                 console.log("에러")
@@ -425,5 +425,3 @@
 </script>
 
 
-</body>
-</html>
