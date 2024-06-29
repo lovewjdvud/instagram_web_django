@@ -258,8 +258,8 @@
 
 </div>
 
-<!-- 모달 창 -->
-<div class="modal_overlay">
+<!-- 첫번째 모달 창 -->
+<div id = "first_modal" class="modal_overlay">
     <div class="modal_window">
         <div style="display: flex; flex-direction: row; justify-content: space-between">
             <div style="width: 40px; background: gray">
@@ -272,20 +272,94 @@
               <span class="material-icons-outlined">close</span>
             </div>
         </div>
-        <div class="img_upload_space" style="background-color: orange; width: 778px; height: 540px; margin-top: 10px"></div>
+        <div class="img_upload_space" style="border-top: solid 1px gray; width: 778px; height: 500px; margin-top: 10px"></div>
+    </div>
+</div>
+
+<!-- 두번째 모달 창 -->
+<div id="second_modal" class="modal_overlay">
+    <div class="modal_window">
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <div style="width: 40px; background: gray">
+                앞부분
+            </div>
+            <div>
+                새이미지 업로드
+            </div>
+            <div style="width: 40px; background: gray">
+              <span class="material-icons-outlined">close</span>
+            </div>
+        </div>
+
+        <div style="border-top: solid 1px gray; display: flex; flex-direction: row;margin-top: 10px">
+            <div class="img_upload_space"
+                 style="width: 500px; height: 500px">
+
+            </div>
+            <div style="border-left: solid 1px gray;">
+                <div>
+                    <textarea id="input_feed_content" class="form-control"style="width: 276px; height: 400px" id="exampleFormControlTextarea1" rows="5"></textarea>
+                </div>
+
+                <button id="feed_create_button" type="button" class="btn btn-primary" style="width: 100%">
+                    공유하기
+                </button>
+            </div>
+
+        </div>
+
+
     </div>
 </div>
 
 <!--모달 작업 Jquery-->
 <script>
+
+    let files;
     $("#nav_bar_add_box").click(function (){
-        $(".modal_overlay").css({
+        $("#first_modal").css({
             display : 'flex'
         });
 
         $(document.body).css({
            overflow:"hidden"
         });
+    });
+
+    $("#feed_create_button").click(function () {
+        let file = files
+        let image = files[0].name ;
+        let content = $("#input_feed_content").val();
+
+
+        let user_id = "song_jp";
+        let profile_image = "https://i.namu.wiki/i/dhe5kXKxx2F3v4gDoaGqjoPJJJIg-slZQOnqzMyebvifU-JLhLnA5jKervfsXLErBP_T2pq6TaFrcYuvtP7Ix1pG1AnJXYl7q6irtXa2TFi4jYsT-nsiPEWb5vMxLRnVQxwOY0o2Ah-yfTsQ2CMK7Q.webp";
+
+        let fd = new FormData();
+
+        fd.append(file,file)
+        fd.append(image,image)
+        fd.append(content,content)
+        fd.append(user_id,user_id)
+        fd.append(profile_image,profile_image)
+         console.log("contentcontentcontent         " + fd[2]);
+        $.ajax({
+            url: "/content/upload",
+            data: fd,
+            method: "POST",
+            processData: false,
+            contentType:false,
+            success: function (data) {
+                console.log("에러")
+            },
+            error: function (request, status, error) {
+                console.log("에러")
+            },
+            complete: function () {
+                console.log("완료")
+            }
+        })
+
     });
 
     $('.img_upload_space')
@@ -303,7 +377,6 @@
             });
         } else {
             $(e.target).css({
-                "background-color": "orange",
                 "outline-offset": "-10px"
             });
         }
@@ -314,17 +387,29 @@
         e.preventDefault();
 
         e.dataTransfer = e.originalEvent.dataTransfer; //2
-        var files = e.target.files || e.dataTransfer.files;
+        files = e.target.files || e.dataTransfer.files;
 
         if (files.length > 1) {
             alert('하나만 올려라.');
             return;
         }
         if (files[0].type.match(/image.*/)) {
-            $(e.target).css({
+
+            $("#first_modal").css({
+                display: "none"
+            });
+
+            $("#second_modal").css({
+                display: "flex"
+            });
+
+            $(".img_upload_space").css({
                 "background-image": "url(" + window.URL.createObjectURL(files[0]) + ")",
                 "outline": "none",
-                "background-size": "100% 100%"
+                "background-size": "100%",
+                "background-repeat" : "no-repeat",
+                "background-position" : "center"
+
             });
         } else {
             alert('이미지가 아닙니다.');
