@@ -25,4 +25,13 @@ class Upload(APIView):
 
         image = uuid_name
         content = request.data.get('content')
- 
+        user_id = request.data.get('user_id')
+        profile_image = request.data.get('profile_image')
+        if content is None:
+            content = '암것도 없어'
+
+        Feed.objects.create(image=image, content=content, user_id=user_id, profile_image=profile_image,like_count=0)
+
+
+
+        return Response(status=200)
