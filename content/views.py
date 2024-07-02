@@ -11,8 +11,18 @@ from instagram_web.settings import MEDIA_ROOT
 class Main(APIView):
     def get(self, request):
         feedList = Feed.objects.all().order_by("-id")
-        print(feedList)
-        return render(request, "instagram/main.html",context=dict(feeds=feedList))
+        print('로그인 사용자 : ',request.session.get('email'))
+        email = request.session.get('email')
+
+        if email is None:
+            return render(request, "user/login.html",)
+
+        user = Feed.objects.filter(email=email)
+
+        if user is None:
+            return render(request, "user/login.html",)
+
+        return render(request, "instagram/main.html",context=dict(feeds=feedList,user=user))
 
 class Upload(APIView):
     def post(self, request):
@@ -25,13 +35,4 @@ class Upload(APIView):
 
         image = uuid_name
         content = request.data.get('content')
-        user_id = request.data.get('user_id')
-        profile_image = request.data.get('profile_image')
-        if content is None:
-            content = '암것도 없어'
-
-        Feed.objects.create(image=image, content=content, user_id=user_id, profile_image=profile_image,like_count=0)
-
-
-
-        return Response(status=200)
+        user_id 
