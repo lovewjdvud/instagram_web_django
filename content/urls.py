@@ -1,8 +1,7 @@
 
 
 from django.urls import path
-from .views import Upload
+from .views import UploadFeed,Main
 
 urlpatterns = [
-    path("upload", Upload.as_view())
-]
+    path("upload", UploadFeed.

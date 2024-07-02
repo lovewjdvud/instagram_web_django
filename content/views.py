@@ -4,6 +4,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Feed
+from user.models import User
 import os
 from instagram_web.settings import MEDIA_ROOT
 
@@ -11,37 +12,23 @@ from instagram_web.settings import MEDIA_ROOT
 class Main(APIView):
     def get(self, request):
         feedList = Feed.objects.all().order_by("-id")
-        print('로그인 사용자 : ',request.session.get('email'))
+        # print('로그인 사용자 : ',request.session.get('email'))
         email = request.session.get('email')
-
+        print('로그인 사용자 : 3 ', request.session.get('email'))
         if email is None:
             return render(request, "user/login.html",)
-
-        user = Feed.objects.filter(email=email)
+        print('로그인 사용자 1: ', request.session.get('email'))
+        user = User.objects.filter(email=email).first()
 
         if user is None:
             return render(request, "user/login.html",)
-
+        print('로그인 사용자 2: ', request.session.get('email'))
         return render(request, "instagram/main.html",context=dict(feeds=feedList,user=user))
 
-class Upload(APIView):
+class UploadFeed(APIView):
     def post(self, request):
+
+        # 일단 파일 불러와
         file = request.FILES['file']
-        uuid_name = uuid4().hex
-        save_path = os.path.join(MEDIA_ROOT, uuid_name)
-        with open(save_path, 'wb+') as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
 
-        image = uuid_name
-        content = request.data.get('content')
-        user_id = request.data.get('user_id')
-        profile_image = request.data.get('profile_image')
-        if content is None:
-            content = '암것도 없어'
-
-        Feed.objects.create(image=image, content=content, user_id=user_id, profile_image=profile_image,like_count=0)
-
-
-
-        return Response(status=200)
+        uuid_name = 
