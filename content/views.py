@@ -31,4 +31,17 @@ class UploadFeed(APIView):
         # 일단 파일 불러와
         file = request.FILES['file']
 
-        uuid_name = 
+        uuid_name = uuid4().hex
+        save_path = os.path.join(MEDIA_ROOT, uuid_name)
+
+        with open(save_path, 'wb+') as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+
+        asdf = uuid_name
+        content123 = request.data.get('content')
+        email = request.session.get('email', None)
+
+        Feed.objects.create(image=asdf, content=content123, email=email)
+
+        return Response(status=200)
