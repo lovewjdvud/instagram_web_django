@@ -1,11 +1,24 @@
 <!doctype html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
 <head>
+    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% load static %}
 
-    <title>Bootstrap demo</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <!-- Google Icon -->
+    <link
+            href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+            rel="stylesheet">
+
+    <!-- Jquery -->
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+    <title>Hello, world!</title>
 
     <style>
         .box {
@@ -15,20 +28,16 @@
             overflow: hidden;
         }
 
-        .feed_box {
-            margin: 20px 0;
-            border: solid 1px gray;
-            background-color: white
-        }
-
         .profile {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        input:focus {
-            outline: none
+        .feed_box {
+            margin: 20px 0;
+            border: solid 1px gray;
+            background-color: white
         }
 
         .modal_overlay {
@@ -58,21 +67,7 @@
             position: relative;
             padding: 10px;
         }
-
     </style>
-
-    <!--    Bootstrap-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-    <!--    Google Icons-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
-          rel="stylesheet">
-
-    <!--    JQuery-->
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-
 </head>
 
 <body>
@@ -91,10 +86,11 @@
             <div class="dropdown">
                 <a href="#" role="button" id="dropdownMenuLink"
                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <div class="box" style="width: 27px; height: 27px">
+                    <div class="box" style="width: 25px; height: 25px">
 
                         <img class="profile"
-                             src="{% get_media_prefix %}{{ user.profile_image }}">>
+                             src="{% get_media_prefix %}{{ user.profile_image }}">
+
                     </div>
                 </a>
 
@@ -103,7 +99,7 @@
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="/user/logout">로그아웃</a></li>
+                    <li><a class="dropdown-item" href="/user/logout">로그아웃 </a></li>
                 </ul>
             </div>
         </div>
@@ -112,105 +108,482 @@
 
 
 <div style="display: flex; flex-direction: row;text-align: center; justify-content: center;padding-top: 60px; background-color:#FAFAFA">
-    <div style="min-width: 500px; height: 500px;margin-right: 300px">
-        <!-- 피드 화면-->
+    <div style="width: 500px;min-width: 500px;margin-right: 300px">
+
+        <!-- 여기서부터 피드박스 -->
         {% for feed in feeds %}
-        <div class="feed_box">
-            <div style="border: solid 1px gray; background-color: white">
+            <div class="feed_box">
                 <div style="display: flex;flex-direction: row; align-items: center; margin: 20px">
-                    <div class="box" style="width: 35px; height: 35px;margin-right: 10px">
+                    <div class="box" style="width: 35px; height: 35px">
                         <img class="profile"
-                             src="{% get_media_prefix %}{{feed.profile_image}}">
-                    </div>
-
-                    <div>
-                        {{feed.user_id}}
-                    </div>
-                </div>
-
-                <div>
-                    <img style="width: 497px"
-                         src="{% get_media_prefix %}{{feed.image}}">
-                </div>
-
-                <div style="display: flex; flex-direction: row; justify-content: space-between; margin: 10px 20px">
-                    <div>
-                        <span class="material-icons-outlined">favorite_border</span>
-                        <span class="material-icons-outlined">mode_comment</span>
-                        <span class="material-icons-outlined">send</span>
+                             src="{% get_media_prefix %}{{ feed.profile_image }}">
                     </div>
                     <div>
-                        <span class="material-icons-outlined">bookmark_border</span>
+                        {{ feed.nickname }}
                     </div>
                 </div>
-                <div style="margin-left: 20px; text-align: left; font-size: 14px"> 춘식이 <b>외 {{feed.like_count}}명</b>이
-                    좋아합니다
+
+                <div><img style="width: 100%"
+                          src="{% get_media_prefix %}{{ feed.image }}">
                 </div>
-                <div style="margin-left: 20px; text-align: left;font-size: 16px"><b>{{feed.user_id}}</b>
-                    {{feed.content}}
+                <div style="margin: 0 20px;display: flex; flex-direction: row; justify-content: space-between">
+                    <div>
+                        <span id="favorite_{{ feed.id }}" feed_id="{{ feed.id }}"
+                              class="favorite material-icons-outlined"
+                              style="color: red;cursor: pointer">{% if feed.is_liked %}
+                            favorite{% else %}favorite_border{% endif %}</span>
+                    </div>
+                    <div>
+                        <span id="bookmark_{{ feed.id }}" feed_id="{{ feed.id }}" class="bookmark material-icons-outlined" style="cursor: pointer">
+                            {% if feed.is_marked %}
+                            bookmark
+                            {% else %}
+                            bookmark_border
+                            {% endif %}
+                        </span>
+
+                    </div>
                 </div>
-                <div style="margin-left: 20px; text-align: left;font-size: 14px"><b>aaaa_w</b> 나도 무빙 재밌드라</div>
-                <div style="margin-left: 20px; text-align: left;font-size: 14px"><b>eaef_2</b> 나도 봐야지</div>
-                <div><input type="text" class="form-control" style="box-shadow: none; border-top: solid 1px gray"
-                            placeholder="댓글 달기" aria-label="Username" aria-describedby="addon-wrapping"></div>
+                <div style="margin: 0 20px;text-align: left;font-size: 14px"> 춘식이 <b>외 {{ feed.like_count }}명</b>이
+                    좋아합니다.
+                </div>
+                <div style="margin: 0 20px;text-align: left;font-size: 16px">
+                    <b>{{ feed.nickname }}</b> {{ feed.content }}
+                </div>
+                <div id="reply_list_{{ feed.id }}">
+                    {% for reply in feed.reply_list %}
+                        <div style="margin: 0 20px;text-align: left;font-size: 14px">
+                            <b>{{ reply.nickname }}</b> {{ reply.reply_content }}</div>
+                    {% endfor %}
+                </div>
+
+
+                <div style="display:flex;flex-direction: row;align-items: center; border-top: solid 1px gray ">
+                    <input id="reply_{{ feed.id }}" type="text" class="form-control"
+                           style="box-shadow: none; border: none; outline: none"
+                           placeholder="댓글 달기..">
+                    <div feed_id="{{ feed.id }}" class="upload_reply"
+                         style="width: 50px;color: cornflowerblue; font-weight: bold">
+                        게시
+                    </div>
+                </div>
             </div>
-        </div>
         {% endfor %}
+
+        <!-- 여기까지 피드박스 -->
     </div>
-
-    <!-- 오른쪽 고정 추천 화면-->
     <div style="width: 400px; height: 1000px; position: fixed;left: 62%; z-index: 0">
-        <!-- 내 계정 전환 화면-->
         <div style="display: flex;flex-direction: row; align-items: center; margin: 20px">
-            <div class="box" style="width: 45px; height: 45px">
-
+            <div class="box" style="width: 70px; height: 70px">
                 <img class="profile"
-                     src="{% get_media_prefix %}{{ user.profile_image }}">>
+                     src="{% get_media_prefix %}{{ user.profile_image }}">
             </div>
-            <div style="margin-left: 10px">
+            <div style="margin-left: 10px; text-align: left">
                 <div style="font-weight: bold">
                     {{ user.nickname }}
                 </div>
                 <div style="color: gray">
                     {{ user.name }}
                 </div>
-
             </div>
         </div>
-        <!-- 회원님을 위한 추천 화면-->
-        <div style="display: flex;flex-direction: row;justify-content: space-between">
+        <div style="display: flex;flex-direction: row; justify-content: space-between">
             <div style="font-weight: bold; color: gray">
                 회원님을 위한 추천
             </div>
-
             <div>
-                <a href="#" style="font-weight: bold;color: black; text-decoration: none">모두보기</a>
+                <a href="#" style="font-weight: bold;color: black;text-decoration: none">모두보기</a>
             </div>
         </div>
-        <!-- 내 팔로워 화면-->
-        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; ">
+        <div style="display: flex;flex-direction: row;justify-content: space-between; align-items: center;">
             <div style="display: flex; flex-direction: row">
-                <div class="box" style="width: 27px; height: 27px">
-
+                <div class="box" style="width: 35px; height: 35px">
                     <img class="profile"
-                         src="{{ user.profile_image }} ">
+                         src="http://file3.instiz.net/data/file3/2021/05/31/e/b/8/eb8d9ad2d779ca2a0b7acc2b67694a23.png">
                 </div>
                 <div style="margin-left: 10px; text-align: left">
-                    <div style="font-weight: bold; font-size: 14px">
-                        song_jp
+                    <div style="font-weight: bold;font-size: 14px">
+                        aaaaaaaaaa
                     </div>
                     <div style="color: gray;font-size: 14px">
-                        sads님 외 31명 팔로우합니다
+                        나랑 같이 치킨 먹음
                     </div>
                 </div>
             </div>
+
             <div>
-                <a href="#" style="font-weight: bold;color: dodgerblue; text-decoration: none">팔로워</a>
+                <a href="#" style="font-size: 14px;font-weight: bold;text-decoration: none">팔로우</a>
             </div>
         </div>
-        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; ">
+        <div style="display: flex;flex-direction: row;justify-content: space-between; align-items: center;">
             <div style="display: flex; flex-direction: row">
-                <div class="box" style="width: 27px; height: 27px">
-
+                <div class="box" style="width: 35px; height: 35px">
                     <img class="profile"
-                         src="data:image/webp;base64,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
+                         src="http://file3.instiz.net/data/file3/2021/05/31/e/b/8/eb8d9ad2d779ca2a0b7acc2b67694a23.png">
+                </div>
+                <div style="margin-left: 10px; text-align: left">
+                    <div style="font-weight: bold;font-size: 14px">
+                        aaaaaaaaaa
+                    </div>
+                    <div style="color: gray;font-size: 14px">
+                        나랑 같이 치킨 먹음
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <a href="#" style="font-size: 14px;font-weight: bold;text-decoration: none">팔로우</a>
+            </div>
+        </div>
+        <div style="display: flex;flex-direction: row;justify-content: space-between; align-items: center;">
+            <div style="display: flex; flex-direction: row">
+                <div class="box" style="width: 35px; height: 35px">
+                    <img class="profile"
+                         src="http://file3.instiz.net/data/file3/2021/05/31/e/b/8/eb8d9ad2d779ca2a0b7acc2b67694a23.png">
+                </div>
+                <div style="margin-left: 10px; text-align: left">
+                    <div style="font-weight: bold;font-size: 14px">
+                        aaaaaaaaaa
+                    </div>
+                    <div style="color: gray;font-size: 14px">
+                        나랑 같이 치킨 먹음
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <a href="#" style="font-size: 14px;font-weight: bold;text-decoration: none">팔로우</a>
+            </div>
+        </div>
+        <div style="display: flex;flex-direction: row;justify-content: space-between; align-items: center;">
+            <div style="display: flex; flex-direction: row">
+                <div class="box" style="width: 35px; height: 35px">
+                    <img class="profile"
+                         src="http://file3.instiz.net/data/file3/2021/05/31/e/b/8/eb8d9ad2d779ca2a0b7acc2b67694a23.png">
+                </div>
+                <div style="margin-left: 10px; text-align: left">
+                    <div style="font-weight: bold;font-size: 14px">
+                        aaaaaaaaaa
+                    </div>
+                    <div style="color: gray;font-size: 14px">
+                        나랑 같이 치킨 먹음
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <a href="#" style="font-size: 14px;font-weight: bold;text-decoration: none">팔로우</a>
+            </div>
+        </div>
+        <div style="display: flex;flex-direction: row;justify-content: space-between; align-items: center;">
+            <div style="display: flex; flex-direction: row">
+                <div class="box" style="width: 35px; height: 35px">
+                    <img class="profile"
+                         src="http://file3.instiz.net/data/file3/2021/05/31/e/b/8/eb8d9ad2d779ca2a0b7acc2b67694a23.png">
+                </div>
+                <div style="margin-left: 10px; text-align: left">
+                    <div style="font-weight: bold;font-size: 14px">
+                        aaaaaaaaaa
+                    </div>
+                    <div style="color: gray;font-size: 14px">
+                        나랑 같이 치킨 먹음
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <a href="#" style="font-size: 14px;font-weight: bold;text-decoration: none">팔로우</a>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px;font-size: 12px;color: gray; text-align: left"> 소개 도움말 홍보센터 API <br> 개인정보처리방침 약관 위치
+            인기 계정 해시태그 언어
+        </div>
+        <div style="margin-top: 20px;font-size: 12px;color: gray; text-align: left"> 2021 인스타그램 프롬 페이스북</div>
+
+    </div>
+</div>
+
+<!-- 첫번째 모달 -->
+<div id="first_modal" class="modal_overlay">
+    <div class="modal_window">
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <div style="width: 40px; background: gray">
+
+            </div>
+            <div>
+                새 이미지 업로드
+            </div>
+            <div style="width: 40px; background: gray">
+                <span class="modal_close material-icons-outlined">close</span>
+            </div>
+        </div>
+
+        <div class="img_upload_space" style="border-top: solid 1px gray;width: 778px; height: 540px;margin-top: 10px">
+
+        </div>
+    </div>
+</div>
+
+<!-- 두번째 모달 -->
+<div id="second_modal" class="modal_overlay">
+    <div class="modal_window">
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <div style="width: 40px; background: gray">
+
+            </div>
+            <div>
+                새 이미지 업로드
+            </div>
+            <div style="width: 40px; background: gray">
+                <span class="modal_close material-icons-outlined">close</span>
+            </div>
+        </div>
+
+        <div style="border-top: solid 1px gray;display: flex; flex-direction: row;margin-top: 10px">
+            <div class="img_upload_space" style="width: 500px; height: 540px;">
+
+            </div>
+            <div style="border-left: solid 1px gray">
+                <div>
+                    <textarea id="input_feed_content" class="form-control" style="width: 276px; height: 400px"
+                              id="exampleFormControlTextarea1" rows="5"></textarea>
+                </div>
+                <button id="feed_create_button" type="button" class="btn btn-primary" style="width: 100%">
+                    공유하기
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- Optional JavaScript; choose one of the two! -->
+<script>
+
+    $(".bookmark").click(function (event) {
+        let feed_id = event.target.attributes.getNamedItem('feed_id').value;
+        let bookmark_id = event.target.id;
+        let bookmark_text = $.trim($('#' + bookmark_id).html());
+        if (bookmark_text == 'bookmark') {
+            $('#' + bookmark_id).html('bookmark_border');
+        } else {
+            $('#' + bookmark_id).html('bookmark');
+        }
+
+        $.ajax({
+            url: "/content/bookmark",
+            data: {
+                feed_id: feed_id,
+                bookmark_text: bookmark_text
+            },
+            method: "POST",
+            success: function (data) {
+                console.log("성공");
+            },
+            error: function (request, status, error) {
+                console.log("에러");
+            },
+            complete: function () {
+                console.log("완료");
+            }
+        });
+    });
+
+
+    $(".favorite").click(function (event) {
+        let feed_id = event.target.attributes.getNamedItem('feed_id').value;
+        let favorite_id = event.target.id;
+        console.log(favorite_id);
+        let favorite_text = $.trim($('#' + favorite_id).html());
+        console.log(favorite_text);
+        if (favorite_text == 'favorite') {
+            $('#' + favorite_id).html('favorite_border');
+        } else {
+            $('#' + favorite_id).html('favorite');
+        }
+
+        $.ajax({
+            url: "/content/like",
+            data: {
+                feed_id: feed_id,
+                favorite_text: favorite_text
+            },
+            method: "POST",
+            success: function (data) {
+                console.log("좋아요 성공");
+                location.replace("/main");
+            },
+            error: function (request, status, error) {
+                console.log("에러");
+            },
+            complete: function () {
+                console.log("완료");
+            }
+        });
+    });
+
+    $(".upload_reply").click(function (event) {
+        let feed_id = event.target.attributes.getNamedItem('feed_id').value;
+        let reply_id = 'reply_' + feed_id;
+        let reply_content = $('#' + reply_id).val();
+
+        if (reply_content.length <= 0) {
+            alert("댓글을 입력하세요");
+            return 0;
+        }
+
+        $.ajax({
+            url: "/content/reply",
+            data: {
+                feed_id: feed_id,
+                reply_content: reply_content
+            },
+            method: "POST",
+            success: function (data) {
+                console.log("성공");
+                alert("댓글 성공");
+                $("#reply_list_" + feed_id).append("<div style='margin: 0 20px;text-align: left;font-size: 14px'><b>{{ user.nickname }}</b> " + reply_content + "</div>")
+                // {#location.replace('/main');#}
+
+            },
+            error: function (request, status, error) {
+                console.log("에러");
+            },
+            complete: function () {
+                console.log("완료");
+                $('#' + reply_id).val('');
+            }
+        });
+
+    });
+
+    $(".modal_close").click(function () {
+        $('#first_modal').css({
+            display: 'none'
+        });
+        $('#second_modal').css({
+            display: 'none'
+        });
+    });
+
+    let files;
+
+    $('#nav_bar_add_box').click(function () {
+        $('#first_modal').css({
+            display: 'flex'
+        });
+
+        $(document.body).css({
+            overflow: 'hidden'
+        });
+
+    });
+
+    $('#feed_create_button').click(function () {
+        alert("공유하기 눌렀다.");
+
+        let file = files[0];
+        let image = files[0].name;
+        let content = $('#input_feed_content').val();
+
+        let fd = new FormData();
+
+        fd.append('file', file);
+        fd.append('image', image);
+        fd.append('content', content);
+
+        $.ajax({
+            url: "/content/upload",
+            data: fd,
+            method: "POST",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log("성공");
+            },
+            error: function (request, status, error) {
+                console.log("에러");
+            },
+            complete: function () {
+                console.log("완료");
+                location.replace("/main");
+            }
+        });
+    });
+
+    $('.img_upload_space')
+        .on("dragover", dragOver)
+        .on("dragleave", dragOver)
+        .on("drop", uploadFiles);
+
+    function dragOver(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (e.type == "dragover") {
+            $(e.target).css({
+                "background-color": "black",
+                "outline-offset": "-20px"
+            });
+        } else {
+            $(e.target).css({
+                "outline-offset": "-10px"
+            });
+        }
+    }
+
+    function uploadFiles(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        e.dataTransfer = e.originalEvent.dataTransfer; //2
+        files = e.target.files || e.dataTransfer.files;
+        console.log("뭔가 파일을 올렸네??" + files[0].name);
+        if (files.length > 1) {
+            alert('하나만 올려라.');
+            return;
+        }
+
+        if (files[0].type.match(/image.*/)) {
+
+            $('#first_modal').css({
+                display: 'none'
+            });
+            $('#second_modal').css({
+                display: 'flex'
+            });
+
+            $('.img_upload_space').css({
+                "background-image": "url(" + window.URL.createObjectURL(files[0]) + ")",
+                "outline": "none",
+                "background-size": "100%",
+                "background-repeat": "no-repeat",
+                "background-position": "center"
+            });
+        } else {
+            alert('이미지가 아닙니다.');
+            return;
+        }
+
+    }
+
+
+</script>
+
+
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+<!-- Option 2: Separate Popper and Bootstrap JS -->
+<!--
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+-->
+</body>
+
+
+</html>

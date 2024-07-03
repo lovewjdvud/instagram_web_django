@@ -72,7 +72,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="position: fixed;width: 100%">
     <div class="container-fluid" style="justify-content: space-between;flex-wrap: nowrap; min-width: 1000px">
         <a class="navbar-brand" href="main"><img style="width: 100px"
-                                                 src="https://www.instagram.com/static/images/web/mobile_nav_type_logo-2x.png/1b47f9d0e595.png">
+                                              src="https://www.instagram.com/static/images/web/mobile_nav_type_logo-2x.png/1b47f9d0e595.png">
         </a>
         <input class="form-control me-2" style="width: 400px" type="search" placeholder="Search" aria-label="Search">
         <div style="display: flex">
@@ -92,9 +92,7 @@
 
                 <ul class="dropdown-menu" style="left:-158px" aria-labelledby="dropdownMenuLink">
                     <li><a class="dropdown-item" href="#">프로필</a></li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                    <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="/user/logout">로그아웃</a></li>
                 </ul>
             </div>
@@ -109,6 +107,7 @@
 
             <img class="profile"
                  src="{% get_media_prefix %}{{ user.profile_image }}">
+
         </div>
     </div>
     <div style="text-align: left">
@@ -117,12 +116,12 @@
                 {{ user.nickname }}
             </div>
             <button id="button_profile_upload" style="margin-right: 40px"> 프로필 사진 편집</button>
-            <input type="file" id="input_fileupload" onchange="profile_upload();" style="display: none"/>
+            <input type="file" id="input_fileupload" onchange="profile_upload();" style="display: none" />
             <span class="material-icons-outlined" style="margin-right: 40px">settings</span>
         </div>
 
         <div style="margin-bottom: 20px">
-            게시물 내 게시물건수 팔로워 111 팔로잉 111
+            게시물 내 게시물건수  팔로워 111 팔로잉 111
         </div>
         <div>
             <b>{{ user.name }}</b>
@@ -133,18 +132,9 @@
 <div style="border-top: solid 2px rgba(50,50,50,0.1); width: 100%">
 
     <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; margin: 20px">
-        <div id="button_feed_list"
-             style="cursor: pointer;margin: 0 30px;display: flex; flex-direction: row;align-items: center"><span
-                class="material-icons-outlined">grid_on</span>내 게시물
-        </div>
-        <div id="button_feed_like_list"
-             style="cursor: pointer;margin: 0 30px;display: flex; flex-direction: row;align-items: center"><span
-                class="material-icons-outlined">favorite_border</span>좋아요
-        </div>
-        <div id="button_feed_bookmark_list"
-             style="cursor: pointer;margin: 0 30px;display: flex; flex-direction: row;align-items: center"><span
-                class="material-icons-outlined">bookmark_border</span>북마크
-        </div>
+        <div id="button_feed_list" style="cursor: pointer;margin: 0 30px;display: flex; flex-direction: row;align-items: center"><span class="material-icons-outlined">grid_on</span>내 게시물</div>
+        <div id="button_feed_like_list" style="cursor: pointer;margin: 0 30px;display: flex; flex-direction: row;align-items: center"><span class="material-icons-outlined">favorite_border</span>좋아요</div>
+        <div id="button_feed_bookmark_list" style="cursor: pointer;margin: 0 30px;display: flex; flex-direction: row;align-items: center"><span class="material-icons-outlined">bookmark_border</span>북마크</div>
     </div>
 
 </div>
@@ -152,40 +142,38 @@
 <div id="feed_list" style="width: 100%; min-width: 1000px; display: flex; align-items: center;justify-content: center">
     <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 1000px; justify-content: center">
         {% for feed in feed_list %}
-        <div style="width: 300px;height: 300px; margin: 10px 5px 0px 5px;">
+            <div style="width: 300px;height: 300px; margin: 10px 5px 0px 5px;">
 
-            <div><img style="width: 300px;height: 300px; object-fit: cover"
-                      src="{% get_media_prefix %}{{ feed.image }}">
+                <div><img style="width: 300px;height: 300px; object-fit: cover"
+                          src="{% get_media_prefix %}{{ feed.image }}">
+                </div>
             </div>
-        </div>
         {% endfor %}
     </div>
 </div>
 
-<div id="like_feed_list"
-     style="width: 100%; min-width: 1000px; display: none; align-items: center;justify-content: center">
+<div id="like_feed_list" style="width: 100%; min-width: 1000px; display: none; align-items: center;justify-content: center">
     <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 1000px; justify-content: center">
         {% for feed in like_feed_list %}
-        <div style="width: 300px;height: 300px; margin: 10px 5px 0px 5px;">
+            <div style="width: 300px;height: 300px; margin: 10px 5px 0px 5px;">
 
-            <div><img style="width: 300px;height: 300px; object-fit: cover"
-                      src="{% get_media_prefix %}{{ feed.image }}">
+                <div><img style="width: 300px;height: 300px; object-fit: cover"
+                          src="{% get_media_prefix %}{{ feed.image }}">
+                </div>
             </div>
-        </div>
         {% endfor %}
     </div>
 </div>
 
-<div id="bookmark_feed_list"
-     style="width: 100%; min-width: 1000px; display: none; align-items: center;justify-content: center">
+<div id="bookmark_feed_list" style="width: 100%; min-width: 1000px; display: none; align-items: center;justify-content: center">
     <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 1000px; justify-content: center">
         {% for feed in bookmark_feed_list %}
-        <div style="width: 300px;height: 300px; margin: 10px 5px 0px 5px;">
+            <div style="width: 300px;height: 300px; margin: 10px 5px 0px 5px;">
 
-            <div><img style="width: 300px;height: 300px; object-fit: cover"
-                      src="{% get_media_prefix %}{{ feed.image }}">
+                <div><img style="width: 300px;height: 300px; object-fit: cover"
+                          src="{% get_media_prefix %}{{ feed.image }}">
+                </div>
             </div>
-        </div>
         {% endfor %}
     </div>
 </div>
@@ -249,39 +237,40 @@
 <!-- Optional JavaScript; choose one of the two! -->
 <script>
 
-    $("#button_feed_list").click(function () {
+    $("#button_feed_list").click(function (){
         $('#feed_list').css({
-            display: 'flex'
+            display : 'flex'
         });
         $('#like_feed_list').css({
-            display: 'none'
+            display : 'none'
         });
         $('#bookmark_feed_list').css({
-            display: 'none'
+            display : 'none'
         });
     });
-    $("#button_feed_like_list").click(function () {
+    $("#button_feed_like_list").click(function (){
         $('#feed_list').css({
-            display: 'none'
+            display : 'none'
         });
         $('#like_feed_list').css({
-            display: 'flex'
+            display : 'flex'
         });
         $('#bookmark_feed_list').css({
-            display: 'none'
+            display : 'none'
         });
     });
-    $("#button_feed_bookmark_list").click(function () {
+    $("#button_feed_bookmark_list").click(function (){
         $('#feed_list').css({
-            display: 'none'
+            display : 'none'
         });
         $('#like_feed_list').css({
-            display: 'none'
+            display : 'none'
         });
         $('#bookmark_feed_list').css({
-            display: 'flex'
+            display : 'flex'
         });
     });
+
 
 
     $(".modal_close").click(function () {
@@ -394,11 +383,11 @@
 
     }
 
-    $('#button_profile_upload').click(function () {
+    $('#button_profile_upload').click(function (){
         $('#input_fileupload').click();
     });
 
-    function profile_upload() {
+    function profile_upload(){
         let file = $('#input_fileupload')[0].files[0];
 
         let email = "{{ user.email }}";

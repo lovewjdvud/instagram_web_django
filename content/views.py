@@ -3,7 +3,7 @@ from uuid import uuid4
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Feed,Like,Reply,Bookmark
+from .models import Feed, Like, Reply, Bookmark
 from user.models import User
 import os
 from instagram_web.settings import MEDIA_ROOT
@@ -17,43 +17,53 @@ class Main(APIView):
         if email is None:
             return render(request, "user/login.html")
 
-        user = User.objects.filter(email=email).first()
+        users = User.objects.filter(email=email).first()
 
-        if user is None:
+        if users is None:
             return render(request, "user/login.html")
+
 
         feed_object_list = Feed.objects.all().order_by('-id')  # select  * from content_feed;
         feed_list = []
 
         for feed in feed_object_list:
-            user = User.objects.filter(email=feed.email).first()
+            usee_feed = User.objects.filter(email=feed.user_id).first()
+            if usee_feed is not None and usee_feed.profile_image:
+                feed_profile_image = usee_feed.profile_image
+            else:
+                feed_profile_image = 'default_profile_image_url'
+
+            if usee_feed is not None and usee_feed.nickname:
+                feed_nickname = usee_feed.nickname
+            else:
+                feed_nickname = 'nil'
+
             reply_object_list = Reply.objects.filter(feed_id=feed.id)
             reply_list = []
             for reply in reply_object_list:
-                user = User.objects.filter(email=reply.email).first()
+                user_reply = User.objects.filter(email=reply.email).first()
                 reply_list.append(dict(reply_content=reply.reply_content,
-                                       nickname=user.nickname))
-            like_count=Like.objects.filter(feed_id=feed.id, is_like=True).count()
-            is_liked=Like.objects.filter(feed_id=feed.id, email=email, is_like=True).exists()
-            is_marked=Bookmark.objects.filter(feed_id=feed.id, email=email, is_marked=True).exists()
+                                       nickname=user_reply.nickname))
+            like_count = Like.objects.filter(feed_id=feed.id, is_like=True).count()
+            is_liked = Like.objects.filter(feed_id=feed.id, email=email, is_like=True).exists()
+            is_marked = Bookmark.objects.filter(feed_id=feed.id, email=email, is_marked=True).exists()
             feed_list.append(dict(id=feed.id,
                                   image=feed.image,
                                   content=feed.content,
                                   like_count=like_count,
-                                  profile_image=user.profile_image,
-                                  nickname=user.nickname,
+                                  profile_image=feed_profile_image,
+                                  nickname=feed_nickname,
                                   reply_list=reply_list,
                                   is_liked=is_liked,
                                   is_marked=is_marked
                                   ))
 
-
-        return render(request, "jinstagram/main.html", context=dict(feeds=feed_list, user=user))
+        # print("adssadsadsa  + " + user.profile_image)
+        return render(request, "instagram/main.html", context=dict(feeds=feed_list, user=users))
 
 
 class UploadFeed(APIView):
     def post(self, request):
-
         # 일단 파일 불러와
         file = request.FILES['file']
 
@@ -68,7 +78,7 @@ class UploadFeed(APIView):
         content123 = request.data.get('content')
         email = request.session.get('email', None)
 
-        Feed.objects.create(image=asdf, content=content123, email=email)
+        Feed.objects.create(image=asdf, content=content123, user_id=email)
 
         return Response(status=200)
 
@@ -85,7 +95,7 @@ class Profile(APIView):
         if user is None:
             return render(request, "user/login.html")
 
-        feed_list = Feed.objects.filter(email=email)
+        feed_list = Feed.objects.filter(user_id=email)
         like_list = list(Like.objects.filter(email=email, is_like=True).values_list('feed_id', flat=True))
         like_feed_list = Feed.objects.filter(id__in=like_list)
         bookmark_list = list(Bookmark.objects.filter(email=email, is_marked=True).values_list('feed_id', flat=True))

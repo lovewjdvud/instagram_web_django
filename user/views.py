@@ -30,9 +30,8 @@ class Join(APIView):
 
 class Login(APIView):
     def get(self, request):
-        return render(request, 'user/login.html')
+        return render(request, "user/login.html")
 
-    # 로그인 시
     def post(self, request):
         # TODO 로그인
         email = request.data.get('email', None)
@@ -59,6 +58,7 @@ class LogOut(APIView):
 
 class UploadProfile(APIView):
     def post(self, request):
+
         # 일단 파일 불러와
         file = request.FILES['file']
         email = request.data.get('email')
