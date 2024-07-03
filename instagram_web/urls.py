@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from .views import Sub
-from content.views import Main,UploadFeed
+from content.views import Main
 from .settings import MEDIA_URL,MEDIA_ROOT
 from django.conf.urls.static import static
 

@@ -3,18 +3,22 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import User
 from django.contrib.auth.hashers import make_password
+from instagram_web.settings import MEDIA_ROOT
+
+import os
+from uuid import uuid4
 # Create your views here.
 
 class Join(APIView):
-    def get(self,request):
-        return render(request,'user/join.html')
+    def get(self, request):
+        return render(request, 'user/join.html')
 
     # 회원가입 시
-    def post(self,request):
-        email = request.data.get('email',None)
-        name = request.data.get('name',None)
-        nickname = request.data.get('nickname',None)
-        password = request.data.get('password',None)
+    def post(self, request):
+        email = request.data.get('email', None)
+        name = request.data.get('name', None)
+        nickname = request.data.get('nickname', None)
+        password = request.data.get('password', None)
 
         User.objects.create(email=email,
                             name=name,
@@ -23,11 +27,13 @@ class Join(APIView):
                             profile_image="default_profile.jpg")
         return Response(status=200)
 
+
 class Login(APIView):
-    def get(self,request):
-        return render(request,'user/login.html')
+    def get(self, request):
+        return render(request, 'user/login.html')
+
     # 로그인 시
-    def post(self,request):
+    def post(self, request):
         # TODO 로그인
         email = request.data.get('email', None)
         password = request.data.get('password', None)
@@ -49,3 +55,26 @@ class LogOut(APIView):
     def get(self, request):
         request.session.flush()
         return render(request, "user/login.html")
+
+
+class UploadProfile(APIView):
+    def post(self, request):
+        # 일단 파일 불러와
+        file = request.FILES['file']
+        email = request.data.get('email')
+
+        uuid_name = uuid4().hex
+        save_path = os.path.join(MEDIA_ROOT, uuid_name)
+
+        with open(save_path, 'wb+') as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+
+        profile_image = uuid_name
+
+        user = User.objects.filter(email=email).first()
+
+        user.profile_image = profile_image
+        user.save()
+
+        return Response(status=200)
